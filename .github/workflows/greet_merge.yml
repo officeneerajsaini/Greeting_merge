@@ -1,10 +1,6 @@
 name: Greetings
 
-on:
-  pull_request_target:
-    types: [opened, closed]
-  issues:
-    types: [opened]
+on: [pull_request_target, issues]
 
 jobs:
   greeting:
@@ -13,32 +9,8 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - name: Greet on Issue Open
-        if: github.event_name == 'issues'
-        uses: actions/first-interaction@v1
-        with:
-          repo-token: ${{ secrets.GH-GREETING }}
-          issue-message: "Hi there! Thanks for opening this issue. We appreciate your contribution to this open-source project. We aim to respond or assign your issue as soon as possible."
-
-      - name: Greet on PR Open
-        if: github.event_name == 'pull_request_target' && github.event.action == 'opened'
-        uses: actions/first-interaction@v1
-        with:
-          repo-token: ${{ secrets.GH-GREETING }}
-          pr-message: "Welcome to Our repository.🎊 Thank you so much for taking the time to point this out."
-
-      - name: Greet on PR Merge
-        if: github.event_name == 'pull_request_target' && github.event.action == 'closed' && github.event.pull_request.merged == true
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ secrets.GH-GREETING }}
-          script: |
-            const prNumber = context.payload.pull_request.number;
-            const authorLogin = context.payload.pull_request.user.login;
-
-            await github.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-              body: `🎉 Congratulations, @${authorLogin}! Your pull request was merged. Thank you for your contribution! 🎉`
-            });
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GH-GREETING }}
+        issue-message: "Hi there! Thanks for opening this issue. We appreciate your contribution to this open-source project. We aim to respond or assign your issue as soon as possible."
+        pr-message: "Welcome to Our repository.🎊 Thank you so much for taking the time to point this out."
